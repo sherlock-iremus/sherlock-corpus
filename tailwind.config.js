@@ -9,22 +9,28 @@ module.exports = {
   theme: {
     extend: {},
     fontFamily: {
-      'sans': 'Vollkorn',
-      'serif': 'Vollkorn',
+      'sans': 'Fira Code',
+      'serif': 'Fira Code',
       'mono': 'Fira Code'
     }
   },
   darkMode: "class",
   plugins: [nextui({
+    prefix: "nextui", // prefix for themes variables
+    addCommonColors: false, // override common colors (e.g. "blue", "green", "pink").
+    defaultTheme: "light", // default theme from the themes object
+    defaultExtendTheme: "light", // default theme to extend on custom themes
+    layout: {}, // common layout tokens (applied to all themes)
     themes: {
+      light: {
+        layout: {}, // light theme layout tokens
+        colors: {}, // light theme colors
+      },
       dark: {
-        colors: {
-          primary: {
-            DEFAULT: "#2dd4bf",
-            foreground: "#000000",
-          }
-        }
-      }
-    }
+        layout: {}, // dark theme layout tokens
+        colors: {}, // dark theme colors
+      },
+      // ... custom themes
+    },
   })]
 }

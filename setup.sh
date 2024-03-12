@@ -4,6 +4,6 @@ cd ../sherlock-rdf
 pnpm link --global
 cd ../sherlock-sparql-queries
 pnpm link --global
-cd ../sherlock-app
+cd ../sherlock-corpus
 pnpm link --global sherlock-rdf
 pnpm link --global sherlock-sparql-queries
