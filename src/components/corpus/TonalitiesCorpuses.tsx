@@ -1,7 +1,5 @@
 import * as React from 'react'
 import { useGetSparqlQueryResultQuery } from 'sherlock-rdf/lib/rtkquery-service-sparql'
-import { useSearchParams } from 'react-router-dom'
-import { SparqlQueryResultObject } from 'sherlock-rdf/lib/sparql-result'
 
 export default function TonalitiesCorpuses() {
   const { data, error, isLoading } = useGetSparqlQueryResultQuery(`
