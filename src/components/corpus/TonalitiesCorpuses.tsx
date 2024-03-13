@@ -3,22 +3,19 @@ import { useGetSparqlQueryResultQuery } from 'sherlock-rdf/lib/rtkquery-service-
 import { useSearchParams } from 'react-router-dom'
 
 export default function TonalitiesCorpuses() {
-    console.log(useGetSparqlQueryResultQuery('caca'))
-    // const { data, error, isLoading } = useSparqlQuery(`
-    // SELECT *
-    // WHERE {
-    //     GRAPH ?g {
-    //         ?s ?p ?o
-    //     }
-    // }
-    // `)
+    const { data, error, isLoading } = useGetSparqlQueryResultQuery(`
+    SELECT * WHERE {
+        GRAPH <http://data-iremus.huma-num.fr/graph/tonalities-projects-and-corpuses> {
+          ?s ?p ?o .
+        }
+      }
+    `)
 
-    // const _ = data || error || isLoading
-    const _ = 1
+    const _ = data || error || isLoading
 
     const [searchParams] = useSearchParams();
 
-    return <pre>
+    return <pre className=' whitespace-break-spaces'>
         {JSON.stringify(_)}
     </pre>
 }
