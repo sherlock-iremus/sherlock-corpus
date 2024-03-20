@@ -40,7 +40,7 @@ function App() {
     }
 
     const menuData: MenuData = [
-        { key: 'tonalities_corpuses', label: 'Tonalities score collections', icon: <PiVinylRecordFill />, element: <TonalitiesCorpuses /> },
+        { key: 'tonalities_corpuses', label: 'Tonalities corpuses', icon: <PiVinylRecordFill />, element: <TonalitiesCorpuses /> },
         { key: 'public_corpuses', label: 'Public corpuses', icon: <FaEmpire />, element: <PublicCorpuses /> },
         { key: 'my_corpuses', label: 'My corpuses', icon: <GiAudioCassette />, element: <MyCorpuses /> },
         { key: 'my_projects', label: 'My projects', icon: <GiSherlockHolmes />, element: <MyProjects /> },
