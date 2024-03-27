@@ -3,14 +3,15 @@ import { Card, CardBody, Spinner } from '@nextui-org/react'
 import { useGetSparqlQueryResultQuery } from 'sherlock-rdf/lib/rtkquery-service-sparql'
 import { SparqlQueryResultObject_Binding } from 'sherlock-rdf/lib/sparql-result'
 import { getCorpusByCreator } from 'sherlock-sparql-queries/lib/corpus'
+import { CorpusView } from './CorpusView'
 
-type Project = {
+export type Corpus = {
   id: string
   label: string
   manifestations: number
 }
 
-const createCorpusFromQuery = (binding: SparqlQueryResultObject_Binding): Project =>
+const createCorpusFromQuery = (binding: SparqlQueryResultObject_Binding): Corpus =>
   binding
     ? {
         id: binding.corpus.value,
@@ -20,7 +21,8 @@ const createCorpusFromQuery = (binding: SparqlQueryResultObject_Binding): Projec
     : { id: '', label: '', manifestations: 0 }
 
 export default function TonalitiesCorpuses() {
-  const [Corpuses, setCorpuses] = useState<Project[]>([])
+  const [selectedCorpus, setSelectedCorpus] = useState<Corpus | null>(null)
+  const [Corpuses, setCorpuses] = useState<Corpus[]>([])
   const { data } = useGetSparqlQueryResultQuery(
     getCorpusByCreator('http://data-iremus.huma-num.fr/id/56ed1334-b47a-440a-b78d-04c8d3cfc311') // TONALITEAM
   )
@@ -30,17 +32,18 @@ export default function TonalitiesCorpuses() {
   }, [data])
 
   if (!data) return <Spinner />
-  else
-    return (
-      <div className="gap-2 grid grid-cols-2 sm:grid-cols-4 p-4">
-        {Corpuses.map(({ id, label, manifestations }) => (
-          <Card shadow="sm" key={id} isPressable onPress={() => console.log('item pressed')}>
-            <CardBody className="text-small justify-between">
-              <b>{label}</b>
-              <p className="text-default-500">{manifestations} manifestations</p>
-            </CardBody>
-          </Card>
-        ))}
-      </div>
-    )
+
+  return (
+    <div className="gap-2 grid grid-cols-2 sm:grid-cols-4 p-4">
+      <CorpusView {...{ selectedCorpus, setSelectedCorpus }} />
+      {Corpuses.map(corpus => (
+        <Card shadow="sm" key={corpus.id} isPressable onPress={() => setSelectedCorpus(corpus)}>
+          <CardBody className="text-small justify-between">
+            <b>{corpus.label}</b>
+            <p className="text-default-500">{corpus.manifestations} items</p>
+          </CardBody>
+        </Card>
+      ))}
+    </div>
+  )
 }
