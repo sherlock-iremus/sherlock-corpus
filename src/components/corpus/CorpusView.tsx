@@ -31,10 +31,12 @@ type Item = {
 
 const populateCorpusFromQuery = (binding: SparqlQueryResultObject_Binding): Item => {
   if (!binding) return { url: '', title: '', composer: '' }
-  const [title, composer] = binding.url.value.match(/\/([^/]+)\/[^/]+\/([^/]+)_([^/]+)\.mei$/).slice(2, 3)
+  const metadatas = (binding.url.value, binding.url.value.split('/'))
+  const title = metadatas.pop()?.split('.')[0].replaceAll('_', ' ') || 'unknown'
+  const composer = metadatas.pop()?.replaceAll('_', ' ') || 'unknown'
   return {
     url: binding.url.value,
-    title,
+    title: title.replaceAll(composer, ''),
     composer,
   }
 }
@@ -80,7 +82,7 @@ export const CorpusView = ({ selectedCorpus, setSelectedCorpus }: CorpusViewProp
                       }
                     >
                       <b>{title}</b>
-                      <p className="text-default-500">{composer} composer</p>
+                      <p className="text-default-500">{composer}</p>
                     </ListboxItem>
                   ))}
                 </Listbox>
