@@ -12,9 +12,8 @@ import {
 } from '@nextui-org/react'
 import { useEffect, useState } from 'react'
 import { Corpus } from './TonalitiesCorpuses'
-import { useGetSparqlQueryResultQuery } from 'sherlock-rdf/lib/rtkquery-service-sparql'
+import { useGetFlattenedSparqlQueryResultQuery } from 'sherlock-rdf/lib/rtkquery-service-sparql'
 import { getCorpusManifestations } from 'sherlock-sparql-queries/lib/corpus'
-import { SparqlQueryResultObject_Binding } from 'sherlock-rdf/lib/sparql-result'
 import IconWrapper from '../misc/IconWrapper'
 import { MdAudioFile } from 'react-icons/md'
 
@@ -29,23 +28,20 @@ type Item = {
   composer: string
 }
 
-const populateCorpusFromQuery = (binding: SparqlQueryResultObject_Binding): Item => {
-  if (!binding) return { url: '', title: '', composer: '' }
-  const metadatas = (binding.url.value, binding.url.value.split('/'))
-  const title = metadatas.pop()?.split('.')[0].replaceAll('_', ' ') || 'unknown'
-  const composer = metadatas.pop()?.replaceAll('_', ' ') || 'unknown'
-  return {
-    url: binding.url.value,
-    title: title.replaceAll(composer, ''),
-    composer,
-  }
+// WORKAROUND WHILE TITLE AND COMPOSER ARE NOT IN THE TRIPLESTORE
+const harvestMetadatas = ({ url }: Item): Item => {
+  const metadatas = url.split('/')
+  const title = metadatas.pop()?.split('.')[0].replaceAll('_', ' ') || 'unknown title'
+  const composer = metadatas.pop()?.replaceAll('_', ' ') || 'unknown composer'
+
+  return { url, title: title.replace(composer, ''), composer }
 }
 
 export const CorpusView = ({ selectedCorpus, setSelectedCorpus }: CorpusViewProps) => {
   const { isOpen, onOpen, onOpenChange } = useDisclosure()
   const [items, setItems] = useState<Item[]>([])
 
-  const { data } = useGetSparqlQueryResultQuery(getCorpusManifestations(selectedCorpus?.id || ''), {
+  const { data } = useGetFlattenedSparqlQueryResultQuery(getCorpusManifestations(selectedCorpus?.id || ''), {
     skip: !selectedCorpus,
   })
 
@@ -58,7 +54,7 @@ export const CorpusView = ({ selectedCorpus, setSelectedCorpus }: CorpusViewProp
   }, [isOpen])
 
   useEffect(() => {
-    if (data) setItems(data.results.bindings.map(populateCorpusFromQuery))
+    if (data) setItems(data.map(harvestMetadatas))
   }, [data])
 
   return (
@@ -74,10 +70,11 @@ export const CorpusView = ({ selectedCorpus, setSelectedCorpus }: CorpusViewProp
                 <Listbox selectionMode="single">
                   {items.map(({ url, composer, title }) => (
                     <ListboxItem
-                      key={String(url)}
+                      key={url}
+                      textValue={title}
                       startContent={
                         <IconWrapper className="bg-primary/10 text-primary">
-                          <MdAudioFile />
+                          <MdAudioFile aria-label="test" />
                         </IconWrapper>
                       }
                     >
@@ -89,7 +86,7 @@ export const CorpusView = ({ selectedCorpus, setSelectedCorpus }: CorpusViewProp
               )}
             </ModalBody>
             <ModalFooter>
-              <Button color="danger" variant="light" onPress={onClose}>
+              <Button color="danger" variant="light" onPress={onClose} aria-label="close">
                 Close
               </Button>
             </ModalFooter>
