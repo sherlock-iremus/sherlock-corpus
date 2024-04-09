@@ -86,7 +86,7 @@ function App() {
                             >{_.label}</ListboxItem>)}
                         </Listbox>
                     </nav>
-                    <main>
+                    <main className='flex-1'>
                         <Routes>
                             <Route path='/' errorElement={<ErrorPage />}>
                                 {menuData.map(_ => <Route key={_.key} path={_.key} element={_.element} />)}
