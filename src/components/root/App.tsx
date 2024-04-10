@@ -1,7 +1,7 @@
 import { Route, Routes, useNavigate } from 'react-router-dom'
 import { Navbar, NavbarContent, NavbarItem, NextUIProvider } from '@nextui-org/react'
 import { Listbox, ListboxItem } from '@nextui-org/react'
-import { ReactElement, useState } from 'react'
+import { Key, ReactElement, useState } from 'react'
 import { FaEmpire } from 'react-icons/fa6'
 import { FaPeopleCarryBox } from 'react-icons/fa6'
 import { GiAudioCassette } from 'react-icons/gi'
@@ -22,81 +22,102 @@ import AccountMenu from '../misc/AccountMenu'
 import { IoChevronForward } from 'react-icons/io5'
 
 function App() {
-    const navigate = useNavigate()
+  const navigate = useNavigate()
 
-    const [selectedKeys, setSelectedKeys] = useState(new Set(['text']))
+  const [selectedKeys, setSelectedKeys] = useState(new Set(['text']))
 
-    const handleAction = e => {
-        setSelectedKeys([e])
+  const handleAction = (key: Key) => {
+    if (typeof key === 'string') {
+      setSelectedKeys(new Set([key]))
     }
+  }
 
-    type MenuData = Array<MenuDatum>
+  type MenuData = Array<MenuDatum>
 
-    type MenuDatum = {
-        key: string,
-        label: string,
-        icon: ReactElement,
-        element: ReactElement
-    }
+  type MenuDatum = {
+    key: string
+    label: string
+    icon: ReactElement
+    element: ReactElement
+  }
 
-    const menuData: MenuData = [
-        { key: 'tonalities_corpuses', label: 'Tonalities score collections', icon: <PiVinylRecordFill />, element: <TonalitiesCorpuses /> },
-        { key: 'public_corpuses', label: 'Public corpuses', icon: <FaEmpire />, element: <PublicCorpuses /> },
-        { key: 'my_corpuses', label: 'My corpuses', icon: <GiAudioCassette />, element: <MyCorpuses /> },
-        { key: 'my_projects', label: 'My projects', icon: <GiSherlockHolmes />, element: <MyProjects /> },
-        { key: 'my_collaborators', label: 'Collaborators', icon: <FaPeopleCarryBox />, element: <MyCollaborators /> },
-        { key: 'documents_that_i_have_annotated', label: 'Annotated documents', icon: <GiTreeRoots />, element: <DocumentsThatIHaveAnnotated /> },
-        { key: 'my_personnal_corpus', label: 'My personnal corpus', icon: <GiLockedChest />, element: <MyPersonnalCorpus /> },
-    ]
+  const menuData: MenuData = [
+    {
+      key: 'tonalities_corpuses',
+      label: 'Tonalities score collections',
+      icon: <PiVinylRecordFill />,
+      element: <TonalitiesCorpuses />,
+    },
+    { key: 'public_corpuses', label: 'Public corpuses', icon: <FaEmpire />, element: <PublicCorpuses /> },
+    { key: 'my_corpuses', label: 'My corpuses', icon: <GiAudioCassette />, element: <MyCorpuses /> },
+    { key: 'my_projects', label: 'My projects', icon: <GiSherlockHolmes />, element: <MyProjects /> },
+    { key: 'my_collaborators', label: 'Collaborators', icon: <FaPeopleCarryBox />, element: <MyCollaborators /> },
+    {
+      key: 'documents_that_i_have_annotated',
+      label: 'Annotated documents',
+      icon: <GiTreeRoots />,
+      element: <DocumentsThatIHaveAnnotated />,
+    },
+    {
+      key: 'my_personnal_corpus',
+      label: 'My personnal corpus',
+      icon: <GiLockedChest />,
+      element: <MyPersonnalCorpus />,
+    },
+  ]
 
-    return (
-        <NextUIProvider navigate={navigate}>
-            <div>
-                <Navbar maxWidth='full'>
-                    <NavbarContent justify='start'>
-                        <p className="font-bold text-primary text-inherit">Sherlock</p>
-                        <p>Corpus Management System</p>
-                    </NavbarContent>
-                    <NavbarContent justify="end">
-                        <NavbarItem>
-                            <AccountMenu />
-                        </NavbarItem>
-                    </NavbarContent>
-                </Navbar>
-                <div className='flex'>
-                    <nav className='p-4'>
-                        <Listbox
-                            aria-label='Sélection de la vue'
-                            disallowEmptySelection
-                            selectionMode='single'
-                            selectedKeys={selectedKeys}
-                            onAction={handleAction}
-                            className="p-0 gap-0 shadow-small rounded-medium"
-                            itemClasses={{
-                                base: "px-3 first:rounded-t-medium last:rounded-b-medium rounded-none gap-3 h-12 data-[hover=true]:bg-default-100/80",
-                            }}
-                        >
-                            {menuData.map(_ => <ListboxItem
-                                key={String(_.key)}
-                                href={`/${_.key}`}
-                                selectedIcon={<IoChevronForward className="text-slate-400" />}
-                                startContent={<IconWrapper className="bg-primary/10 text-primary">
-                                    {_.icon}
-                                </IconWrapper>}
-                            >{_.label}</ListboxItem>)}
-                        </Listbox>
-                    </nav>
-                    <main className='flex-1'>
-                        <Routes>
-                            <Route path='/' errorElement={<ErrorPage />}>
-                                {menuData.map(_ => <Route key={_.key} path={_.key} element={_.element} />)}
-                            </Route>
-                        </Routes>
-                    </main>
-                </div>
-            </div>
-        </NextUIProvider>
-    )
+  return (
+    <NextUIProvider navigate={navigate}>
+      <div>
+        <Navbar maxWidth="full">
+          <NavbarContent justify="start">
+            <p className="font-bold text-primary text-inherit">Sherlock</p>
+            <p>Corpus Management System</p>
+          </NavbarContent>
+          <NavbarContent justify="end">
+            <NavbarItem>
+              <AccountMenu />
+            </NavbarItem>
+          </NavbarContent>
+        </Navbar>
+        <div className="flex">
+          <nav className="p-4">
+            <Listbox
+              aria-label="Sélection de la vue"
+              disallowEmptySelection
+              selectionMode="single"
+              selectedKeys={selectedKeys}
+              onAction={handleAction}
+              className="p-0 gap-0 shadow-small rounded-medium"
+              itemClasses={{
+                base: 'px-3 first:rounded-t-medium last:rounded-b-medium rounded-none gap-3 h-12 data-[hover=true]:bg-default-100/80',
+              }}
+            >
+              {menuData.map(_ => (
+                <ListboxItem
+                  key={String(_.key)}
+                  href={`/${_.key}`}
+                  selectedIcon={<IoChevronForward className="text-slate-400" />}
+                  startContent={<IconWrapper className="bg-primary/10 text-primary">{_.icon}</IconWrapper>}
+                >
+                  {_.label}
+                </ListboxItem>
+              ))}
+            </Listbox>
+          </nav>
+          <main className="flex-1">
+            <Routes>
+              <Route path="/" errorElement={<ErrorPage />}>
+                {menuData.map(_ => (
+                  <Route key={_.key} path={_.key} element={_.element} />
+                ))}
+              </Route>
+            </Routes>
+          </main>
+        </div>
+      </div>
+    </NextUIProvider>
+  )
 }
 
 export default App

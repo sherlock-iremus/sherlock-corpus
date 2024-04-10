@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Card, CardBody, Spinner } from '@nextui-org/react'
-import { useGetFlattenedSparqlQueryResultQuery } from 'sherlock-rdf/lib/rtkquery-service-sparql'
+import { sparqlApi } from 'sherlock-rdf/lib/rtkquery-service-sparql'
 import { getCorpusByCreator } from 'sherlock-sparql-queries/lib/corpus'
 import { CorpusView } from './CorpusView'
 import { TONALITEAM, getIri } from '../../utils'
@@ -14,7 +14,7 @@ export type Corpus = {
 export default function TonalitiesCorpuses() {
   const [selectedCorpus, setSelectedCorpus] = useState<Corpus | null>(null)
   const [corpus, setCorpuses] = useState<Corpus[]>([])
-  const { data } = useGetFlattenedSparqlQueryResultQuery(getCorpusByCreator(getIri(TONALITEAM)))
+  const { data } = sparqlApi.endpoints.getFlattenedSparqlQueryResult.useQuery(getCorpusByCreator(getIri(TONALITEAM)))
 
   useEffect(() => {
     if (data) setCorpuses(data)

@@ -2,7 +2,7 @@ import { Button, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, Link, Us
 import { MdAccountCircle } from 'react-icons/md'
 import { BASE_API_URL, useGetUserIdQuery, useLogOutMutation } from '../../service'
 import { useNavigate } from 'react-router-dom'
-import { useGetFlattenedSparqlQueryResultQuery } from 'sherlock-rdf/lib/rtkquery-service-sparql'
+import { sparqlApi } from 'sherlock-rdf/lib/rtkquery-service-sparql'
 import { getIri } from '../../utils'
 import { getProfile } from 'sherlock-sparql-queries/lib/profile'
 import { useEffect, useState } from 'react'
@@ -20,7 +20,7 @@ export default function AccountMenu() {
   const { data: userId } = useGetUserIdQuery(0)
   const [logOut] = useLogOutMutation()
   const navigate = useNavigate()
-  const { data } = useGetFlattenedSparqlQueryResultQuery(getProfile(getIri(userId)), { skip: !userId })
+  const { data } = sparqlApi.endpoints.getFlattenedSparqlQueryResult.useQuery(getProfile(getIri(userId)), { skip: !userId })
 
   const onLogout = () => {
     logOut(0)

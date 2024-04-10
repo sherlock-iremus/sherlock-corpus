@@ -1,6 +1,6 @@
 import { Button, Input, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader } from '@nextui-org/react'
 import { useState } from 'react'
-import { useGetFlattenedSparqlQueryResultQuery } from 'sherlock-rdf/lib/rtkquery-service-sparql'
+import { sparqlApi } from 'sherlock-rdf/lib/rtkquery-service-sparql'
 import { getIri } from '../../utils'
 import { getProjectsByCreator } from 'sherlock-sparql-queries/lib/projects'
 import { useGetUserIdQuery, usePostProjectMutation } from '../../service'
@@ -13,7 +13,9 @@ type NewProjectDialogProps = {
 export const NewProjectDialog = ({ isOpen, onOpenChange }: NewProjectDialogProps) => {
   const { data: userId } = useGetUserIdQuery(0)
   const [label, setLabel] = useState('')
-  const { refetch } = useGetFlattenedSparqlQueryResultQuery(getProjectsByCreator(getIri(userId)), { skip: !userId })
+  const { refetch } = sparqlApi.endpoints.getFlattenedSparqlQueryResult.useQuery(getProjectsByCreator(getIri(userId)), {
+    skip: !userId,
+  })
   const [postProject] = usePostProjectMutation()
 
   const createProject = async () => {
