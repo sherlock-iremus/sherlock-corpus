@@ -1,6 +1,6 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 
-export const BASE_API_URL = import.meta.env.DEV ? 'http://localhost:5555/' : 'https://data-iremus.huma-num.fr/'
+export const BASE_API_URL = 'https://data-iremus.huma-num.fr/'
 
 export const service = createApi({
   reducerPath: 'service',

@@ -6,7 +6,7 @@ import { SparqlQueryResultObject, SparqlQueryResultObject_Binding } from 'sherlo
 export const sparqlApi = createApi({
   reducerPath: 'sparqlApi',
   baseQuery: fetchBaseQuery({
-    baseUrl: 'http://localhost:3030/iremus/', // "https://data-iremus.huma-num.fr/sparql/",
+    baseUrl: 'https://data-iremus.huma-num.fr/sparql/',
   }),
   endpoints: builder => ({
     getFlattenedSparqlQueryResult: builder.query<any[], string>({
