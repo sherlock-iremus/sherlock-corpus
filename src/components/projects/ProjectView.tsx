@@ -1,10 +1,10 @@
 import { Button, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, useDisclosure } from '@nextui-org/react'
 import { useEffect } from 'react'
-import { sparqlApi } from 'sherlock-rdf/lib/rtkquery-service-sparql'
 import { Project } from './MyProjects'
 import { getUuid, getIri } from '../../utils'
 import { getProjectsByCreator } from 'sherlock-sparql-queries/lib/projects'
 import { useDeleteProjectMutation, useGetUserIdQuery } from '../../service'
+import { useGetFlattenedSparqlQueryResultQuery } from '../../sparql'
 
 type ProjectViewProps = {
   selectedProject: Project | null
@@ -14,7 +14,7 @@ type ProjectViewProps = {
 export const ProjectView = ({ selectedProject, setSelectedProject }: ProjectViewProps) => {
   const { isOpen, onOpen, onOpenChange } = useDisclosure()
   const { data: userId } = useGetUserIdQuery(0)
-  const { refetch } = sparqlApi.endpoints.getFlattenedSparqlQueryResult.useQuery(getProjectsByCreator(getIri(userId)), {
+  const { refetch } = useGetFlattenedSparqlQueryResultQuery(getProjectsByCreator(getIri(userId)), {
     skip: !userId,
   })
   const [deleteProject] = useDeleteProjectMutation()

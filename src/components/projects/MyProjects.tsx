@@ -1,12 +1,12 @@
 import { useEffect, useState } from 'react'
 import { Button, Card, CardBody, Spinner, Tooltip, useDisclosure } from '@nextui-org/react'
-import { sparqlApi } from 'sherlock-rdf/lib/rtkquery-service-sparql'
 import { useGetUserIdQuery } from '../../service'
 import { getProjectsByCreator } from 'sherlock-sparql-queries/lib/projects'
 import { getIri } from '../../utils'
 import { ProjectView } from './ProjectView'
 import { IoAdd } from 'react-icons/io5'
 import { NewProjectDialog } from './NewProjectDialog'
+import { useGetFlattenedSparqlQueryResultQuery } from '../../sparql'
 
 export type Project = {
   id: string
@@ -18,13 +18,16 @@ export default function MyProjects() {
   const { data: userId } = useGetUserIdQuery(0)
   const [selectedProject, setSelectedProject] = useState<Project | null>(null)
   const [projects, setProjects] = useState<Project[]>([])
-  const { data } = sparqlApi.endpoints.getFlattenedSparqlQueryResult.useQuery(getProjectsByCreator(getIri(userId)), {
+  const { data } = useGetFlattenedSparqlQueryResultQuery(getProjectsByCreator(getIri(userId)), {
     skip: !userId,
   })
   const { isOpen, onOpen, onOpenChange } = useDisclosure()
 
   useEffect(() => {
-    if (data) setProjects(data)
+    if (data) {
+      setProjects(data)
+      console.log(data)
+    }
   }, [data])
 
   if (!data) return <Spinner />

@@ -2,10 +2,10 @@ import { Button, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, Link, Us
 import { MdAccountCircle } from 'react-icons/md'
 import { BASE_API_URL, useGetUserIdQuery, useLogOutMutation } from '../../service'
 import { useNavigate } from 'react-router-dom'
-import { sparqlApi } from 'sherlock-rdf/lib/rtkquery-service-sparql'
 import { getIri } from '../../utils'
 import { getProfile } from 'sherlock-sparql-queries/lib/profile'
 import { useEffect, useState } from 'react'
+import { useGetFlattenedSparqlQueryResultQuery } from '../../sparql'
 
 type User = {
   key: string
@@ -20,7 +20,7 @@ export default function AccountMenu() {
   const { data: userId } = useGetUserIdQuery(0)
   const [logOut] = useLogOutMutation()
   const navigate = useNavigate()
-  const { data } = sparqlApi.endpoints.getFlattenedSparqlQueryResult.useQuery(getProfile(getIri(userId)), { skip: !userId })
+  const { data } = useGetFlattenedSparqlQueryResultQuery(getProfile(getIri(userId)), { skip: !userId })
 
   const onLogout = () => {
     logOut(0)
@@ -66,7 +66,7 @@ export default function AccountMenu() {
     )
   else
     return (
-      <Link isExternal href={BASE_API_URL + `sherlock/login?redirect-uri=${window.location.href}`}>
+      <Link href={BASE_API_URL + `sherlock/login?redirect-uri=${window.location.href}`}>
         <Button variant="faded" startContent={<MdAccountCircle />}>
           Login
         </Button>

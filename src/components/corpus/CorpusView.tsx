@@ -12,10 +12,10 @@ import {
 } from '@nextui-org/react'
 import { useEffect, useState } from 'react'
 import { Corpus } from './TonalitiesCorpuses'
-import { sparqlApi } from 'sherlock-rdf/lib/rtkquery-service-sparql'
 import { getCorpusManifestations } from 'sherlock-sparql-queries/lib/corpus'
 import IconWrapper from '../misc/IconWrapper'
 import { MdAudioFile } from 'react-icons/md'
+import { useGetFlattenedSparqlQueryResultQuery } from '../../sparql'
 
 type CorpusViewProps = {
   selectedCorpus: Corpus | null
@@ -41,7 +41,7 @@ export const CorpusView = ({ selectedCorpus, setSelectedCorpus }: CorpusViewProp
   const { isOpen, onOpen, onOpenChange } = useDisclosure()
   const [items, setItems] = useState<Item[]>([])
 
-  const { data } = sparqlApi.endpoints.getFlattenedSparqlQueryResult.useQuery(getCorpusManifestations(selectedCorpus?.id || ''), {
+  const { data } = useGetFlattenedSparqlQueryResultQuery(getCorpusManifestations(selectedCorpus?.id || ''), {
     skip: !selectedCorpus,
   })
 
