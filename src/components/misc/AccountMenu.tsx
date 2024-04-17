@@ -38,6 +38,7 @@ export default function AccountMenu() {
     await logOut(0)
     navigate(0)
   }
+  user && console.log(user)
 
   useEffect(() => {
     if (data) setUser(data[0])
@@ -52,7 +53,13 @@ export default function AccountMenu() {
             name={user.name}
             description={'ORCID:' + user.orcid}
             className="transition-transform p-2"
-            avatarProps={{ name: user.emoji }}
+            avatarProps={{
+              name: user.emoji,
+              classNames: {
+                base: 'bg-gradient-to-br from-[#FFB457] to-[#FF705B]',
+                icon: 'text-black/80',
+              },
+            }}
           />
         </DropdownTrigger>
         <DropdownMenu
