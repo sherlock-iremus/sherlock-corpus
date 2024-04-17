@@ -1,7 +1,6 @@
 import { Button, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, Link, User } from '@nextui-org/react'
 import { MdAccountCircle } from 'react-icons/md'
 import { BASE_API_URL, useGetUserIdQuery, useLogOutMutation } from '../../service'
-import { useNavigate } from 'react-router-dom'
 import { getIri } from '../../utils'
 import { getProfile } from 'sherlock-sparql-queries/lib/profile'
 import { useEffect, useState } from 'react'
@@ -17,14 +16,13 @@ type User = {
 
 export default function AccountMenu() {
   const [user, setUser] = useState<User | null>(null)
-  const { data: userId } = useGetUserIdQuery(0)
+  const { data: userId, refetch } = useGetUserIdQuery(0)
   const [logOut] = useLogOutMutation()
-  const navigate = useNavigate()
   const { data } = useGetFlattenedSparqlQueryResultQuery(getProfile(getIri(userId)), { skip: !userId })
 
-  const onLogout = () => {
-    logOut(0)
-    navigate(0)
+  const onLogout = async () => {
+    await logOut(0)
+    refetch()
   }
 
   useEffect(() => {
