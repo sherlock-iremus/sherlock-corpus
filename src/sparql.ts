@@ -3,10 +3,14 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 import { SparqlQueryResultObject, SparqlQueryResultObject_Binding } from 'sherlock-rdf/lib/sparql-result'
 
+export const BASE_SPARQL_URL = import.meta.env.DEV
+  ? 'http://localhost:3030/iremus'
+  : 'https://data-iremus.huma-num.fr/sparql/'
+
 export const sparqlApi = createApi({
   reducerPath: 'sparqlApi',
   baseQuery: fetchBaseQuery({
-    baseUrl: 'https://data-iremus.huma-num.fr/sparql/',
+    baseUrl: BASE_SPARQL_URL,
   }),
   endpoints: builder => ({
     getFlattenedSparqlQueryResult: builder.query<any[], string>({

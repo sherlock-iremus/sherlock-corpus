@@ -5,6 +5,7 @@ import { getIri } from '../../utils'
 import { getProfile } from 'sherlock-sparql-queries/lib/profile'
 import { useEffect, useState } from 'react'
 import { useGetFlattenedSparqlQueryResultQuery } from '../../sparql'
+import { useNavigate } from 'react-router-dom'
 
 type User = {
   key: string
@@ -16,13 +17,14 @@ type User = {
 
 export default function AccountMenu() {
   const [user, setUser] = useState<User | null>(null)
-  const { data: userId, refetch } = useGetUserIdQuery(0)
+  const { data: userId } = useGetUserIdQuery(0)
   const [logOut] = useLogOutMutation()
   const { data } = useGetFlattenedSparqlQueryResultQuery(getProfile(getIri(userId)), { skip: !userId })
+  const navigate = useNavigate()
 
   const onLogout = async () => {
     await logOut(0)
-    refetch()
+    navigate(0)
   }
 
   useEffect(() => {
