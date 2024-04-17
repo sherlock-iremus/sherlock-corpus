@@ -1,4 +1,16 @@
-import { Button, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, Link, User } from '@nextui-org/react'
+import {
+  Button,
+  Dropdown,
+  DropdownItem,
+  DropdownMenu,
+  DropdownTrigger,
+  Link,
+  Modal,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  User,
+} from '@nextui-org/react'
 import { MdAccountCircle } from 'react-icons/md'
 import { BASE_API_URL, useGetUserIdQuery, useLogOutMutation } from '../../service'
 import { getIri } from '../../utils'
@@ -66,10 +78,17 @@ export default function AccountMenu() {
     )
   else
     return (
-      <Link href={BASE_API_URL + `sherlock/login?redirect-uri=${window.location.href}`}>
-        <Button variant="faded" startContent={<MdAccountCircle />}>
-          Login
-        </Button>
-      </Link>
+      <Modal backdrop="blur" isOpen>
+        <ModalContent>
+          <ModalHeader className="flex flex-col gap-1">It's been a while...</ModalHeader>
+          <ModalFooter>
+            <Link href={BASE_API_URL + `sherlock/login?redirect-uri=${window.location.href}`}>
+              <Button variant="faded" startContent={<MdAccountCircle />}>
+                Login
+              </Button>
+            </Link>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
     )
 }
