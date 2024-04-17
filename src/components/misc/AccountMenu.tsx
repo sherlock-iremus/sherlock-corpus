@@ -9,6 +9,7 @@ import {
   ModalContent,
   ModalFooter,
   ModalHeader,
+  Spinner,
   User,
 } from '@nextui-org/react'
 import { MdAccountCircle } from 'react-icons/md'
@@ -29,9 +30,11 @@ type User = {
 
 export default function AccountMenu() {
   const [user, setUser] = useState<User | null>(null)
-  const { data: userId } = useGetUserIdQuery(0)
+  const { data: userId, isLoading: isLoadingId } = useGetUserIdQuery(0)
   const [logOut] = useLogOutMutation()
-  const { data } = useGetFlattenedSparqlQueryResultQuery(getProfile(getIri(userId)), { skip: !userId })
+  const { data, isLoading: isLoadingData } = useGetFlattenedSparqlQueryResultQuery(getProfile(getIri(userId)), {
+    skip: !userId,
+  })
   const navigate = useNavigate()
 
   const onLogout = async () => {
@@ -87,14 +90,20 @@ export default function AccountMenu() {
     return (
       <Modal backdrop="blur" isOpen>
         <ModalContent>
-          <ModalHeader className="flex flex-col gap-1">It's been a while...</ModalHeader>
-          <ModalFooter>
-            <Link href={BASE_API_URL + `sherlock/login?redirect-uri=${window.location.href}`}>
-              <Button variant="faded" startContent={<MdAccountCircle />}>
-                Login
-              </Button>
-            </Link>
-          </ModalFooter>
+          {isLoadingData || isLoadingId ? (
+            <Spinner className="p-4" />
+          ) : (
+            <>
+              <ModalHeader className="flex flex-col gap-1">It's been a while...</ModalHeader>
+              <ModalFooter>
+                <Link href={BASE_API_URL + `sherlock/login?redirect-uri=${window.location.href}`}>
+                  <Button variant="faded" startContent={<MdAccountCircle />}>
+                    Login
+                  </Button>
+                </Link>
+              </ModalFooter>
+            </>
+          )}
         </ModalContent>
       </Modal>
     )
