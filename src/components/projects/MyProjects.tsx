@@ -24,10 +24,7 @@ export default function MyProjects() {
   const { isOpen, onOpen, onOpenChange } = useDisclosure()
 
   useEffect(() => {
-    if (data) {
-      setProjects(data)
-      console.log(data)
-    }
+    if (data) setProjects(data)
   }, [data])
 
   if (!data) return <Spinner />
